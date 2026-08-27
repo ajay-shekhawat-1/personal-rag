@@ -8,6 +8,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "http://127.0.0.1:8000";
 
+
 // ==================================================
 // AXIOS CLIENT
 // ==================================================
@@ -16,6 +17,7 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 120000,
 });
+
 
 // ==================================================
 // REQUEST LOGGER
@@ -35,6 +37,7 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 // ==================================================
 // RESPONSE LOGGER
@@ -69,6 +72,7 @@ api.interceptors.response.use(
   }
 );
 
+
 // ==================================================
 // UPLOAD DOCUMENT
 // ==================================================
@@ -86,6 +90,7 @@ export const uploadDocument = async (file) => {
   return response.data;
 };
 
+
 // ==================================================
 // UPLOAD WEBSITE
 // ==================================================
@@ -101,6 +106,7 @@ export const uploadUrl = async (url) => {
   return response.data;
 };
 
+
 // ==================================================
 // GET DOCUMENTS
 // ==================================================
@@ -113,6 +119,7 @@ export const getDocuments = async () => {
   return response.data;
 };
 
+
 // ==================================================
 // DELETE DOCUMENT
 // ==================================================
@@ -124,6 +131,7 @@ export const deleteDocument = async (documentId) => {
 
   return response.data;
 };
+
 
 // ==================================================
 // SEARCH DOCUMENTS
@@ -141,6 +149,7 @@ export const searchDocuments = async (question) => {
   return response.data;
 };
 
+
 // ==================================================
 // RAG CHAT
 // ==================================================
@@ -157,6 +166,7 @@ export const chatWithRag = async (question) => {
   return response.data;
 };
 
+
 // ==================================================
 // HEALTH CHECK
 // ==================================================
@@ -168,6 +178,7 @@ export const healthCheck = async () => {
 
   return response.data;
 };
+
 
 // ==================================================
 // DEFAULT EXPORT

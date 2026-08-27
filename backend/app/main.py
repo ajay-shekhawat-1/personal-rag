@@ -21,6 +21,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://personal-h2u8u3qje-ajay-2382.vercel.app",
     ],
 
     allow_credentials=True,
