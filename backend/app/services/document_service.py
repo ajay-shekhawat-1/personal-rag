@@ -1,10 +1,9 @@
 from pathlib import Path
 
-import textract
-from docx import Document
-from pypdf import PdfReader
 import requests
 from bs4 import BeautifulSoup
+from docx import Document
+from pypdf import PdfReader
 
 
 def extract_url(url: str) -> str:
@@ -53,7 +52,7 @@ def extract_url(url: str) -> str:
         separator="\n"
     )
 
-    # Clean excessive whitespace
+    # Clean excessive whitespace.
     lines = []
 
     for line in text.splitlines():
@@ -66,7 +65,10 @@ def extract_url(url: str) -> str:
 
 
 def extract_pdf(file_path: str) -> str:
-    """Extract text from a PDF file."""
+    """
+    Extract text from a PDF file.
+    """
+
     reader = PdfReader(file_path)
 
     pages = []
@@ -81,7 +83,10 @@ def extract_pdf(file_path: str) -> str:
 
 
 def extract_docx(file_path: str) -> str:
-    """Extract text from a DOCX file."""
+    """
+    Extract text from a DOCX file.
+    """
+
     document = Document(file_path)
 
     paragraphs = []
@@ -93,16 +98,13 @@ def extract_docx(file_path: str) -> str:
     return "\n".join(paragraphs)
 
 
-def extract_doc(file_path: str) -> str:
-    """Extract text from an old DOC file."""
-    text = textract.process(file_path)
-
-    return text.decode("utf-8", errors="ignore")
-
-
 def extract_text(file_path: str) -> str:
     """
     Extract text automatically based on file extension.
+
+    Supported formats:
+    - PDF
+    - DOCX
     """
 
     extension = Path(file_path).suffix.lower()
@@ -113,9 +115,7 @@ def extract_text(file_path: str) -> str:
     if extension == ".docx":
         return extract_docx(file_path)
 
-    if extension == ".doc":
-        return extract_doc(file_path)
-
     raise ValueError(
-        f"Unsupported file type: {extension}"
+        f"Unsupported file type: {extension}. "
+        "Supported formats are PDF and DOCX."
     )

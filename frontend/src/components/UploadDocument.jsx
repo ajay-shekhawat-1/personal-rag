@@ -5,6 +5,7 @@ import {
   uploadUrl,
 } from "../services/api";
 
+
 function UploadDocument({ onUploadSuccess }) {
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState("");
@@ -13,13 +14,47 @@ function UploadDocument({ onUploadSuccess }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+
+  // ==================================================
+  // FILE SELECTION
+  // ==================================================
+
   const handleFileChange = (event) => {
     const selectedFile = event.target.files?.[0];
 
-    setFile(selectedFile || null);
     setMessage("");
     setError("");
+
+    if (!selectedFile) {
+      setFile(null);
+      return;
+    }
+
+    const fileName = selectedFile.name.toLowerCase();
+
+    const isValidFile =
+      fileName.endsWith(".pdf") ||
+      fileName.endsWith(".docx");
+
+    if (!isValidFile) {
+      setFile(null);
+
+      event.target.value = "";
+
+      setError(
+        "Unsupported file type. Please select a PDF or DOCX file."
+      );
+
+      return;
+    }
+
+    setFile(selectedFile);
   };
+
+
+  // ==================================================
+  // DOCUMENT UPLOAD
+  // ==================================================
 
   const handleFileUpload = async () => {
     if (!file) {
@@ -41,10 +76,9 @@ function UploadDocument({ onUploadSuccess }) {
 
       setFile(null);
 
-      const input =
-        document.getElementById(
-          "document-file-input"
-        );
+      const input = document.getElementById(
+        "document-file-input"
+      );
 
       if (input) {
         input.value = "";
@@ -55,16 +89,22 @@ function UploadDocument({ onUploadSuccess }) {
       }
 
     } catch (err) {
-      console.error(err);
+      console.error("Document upload error:", err);
 
       setError(
         err.response?.data?.detail ||
         "Unable to upload document."
       );
+
     } finally {
       setLoading(false);
     }
   };
+
+
+  // ==================================================
+  // WEBSITE URL
+  // ==================================================
 
   const handleUrlUpload = async () => {
     const cleanUrl = url.trim();
@@ -93,21 +133,30 @@ function UploadDocument({ onUploadSuccess }) {
       }
 
     } catch (err) {
-      console.error(err);
+      console.error("Website processing error:", err);
 
       setError(
         err.response?.data?.detail ||
         "Unable to process website."
       );
+
     } finally {
       setLoading(false);
     }
   };
 
+
+  // ==================================================
+  // UI
+  // ==================================================
+
   return (
     <section className="upload-section">
 
-      {/* FILE */}
+      {/* ==========================================
+          FILE UPLOAD
+      ========================================== */}
+
       <div className="upload-card">
 
         <div className="upload-card-icon">
@@ -130,14 +179,14 @@ function UploadDocument({ onUploadSuccess }) {
           >
             {file
               ? file.name
-              : "Choose a file"}
+              : "Choose a PDF or DOCX file"}
           </label>
 
           <input
             id="document-file-input"
             className="hidden-file-input"
             type="file"
-            accept=".pdf,.docx"
+            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={handleFileChange}
             disabled={loading}
           />
@@ -157,7 +206,11 @@ function UploadDocument({ onUploadSuccess }) {
 
       </div>
 
-      {/* URL */}
+
+      {/* ==========================================
+          WEBSITE URL
+      ========================================== */}
+
       <div className="upload-card">
 
         <div className="upload-card-icon">
@@ -179,9 +232,11 @@ function UploadDocument({ onUploadSuccess }) {
             type="url"
             placeholder="https://example.com"
             value={url}
-            onChange={(event) =>
-              setUrl(event.target.value)
-            }
+            onChange={(event) => {
+              setUrl(event.target.value);
+              setMessage("");
+              setError("");
+            }}
             disabled={loading}
           />
 
@@ -202,7 +257,11 @@ function UploadDocument({ onUploadSuccess }) {
 
       </div>
 
-      {/* SUCCESS */}
+
+      {/* ==========================================
+          SUCCESS MESSAGE
+      ========================================== */}
+
       {message && (
         <div className="success-message">
           <span>✓</span>
@@ -210,7 +269,11 @@ function UploadDocument({ onUploadSuccess }) {
         </div>
       )}
 
-      {/* ERROR */}
+
+      {/* ==========================================
+          ERROR MESSAGE
+      ========================================== */}
+
       {error && (
         <div className="error-message">
           <span>!</span>
@@ -221,5 +284,6 @@ function UploadDocument({ onUploadSuccess }) {
     </section>
   );
 }
+
 
 export default UploadDocument;
